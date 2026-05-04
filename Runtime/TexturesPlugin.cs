@@ -44,6 +44,15 @@ public sealed class TexturesPlugin : IPlugin
     private static readonly ILogger Logger = Log.Category("Engine.Textures");
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Foundational for backend texture decoders (e.g. <c>StbTexturesPlugin</c>) that
+    /// register with the <see cref="TextureDecoderRegistry"/> created here. Built
+    /// between <see cref="PluginOrder.Foundation"/> (asset pipeline) and
+    /// <see cref="PluginOrder.Default"/>.
+    /// </remarks>
+    public int Order => PluginOrder.Foundation + 100;
+
+    /// <inheritdoc />
     public void Build(App app)
     {
         Logger.Info("TexturesPlugin: Registering texture model (backend-agnostic)...");
@@ -60,17 +69,11 @@ public sealed class TexturesPlugin : IPlugin
         var loader = new TextureAssetLoader(registry);
         app.World.InsertResource(loader);
 
-        if (app.World.TryGetResource<AssetServer>(out var server))
-        {
-            server.RegisterLoader(loader);
-            Logger.Info(
-                $"TexturesPlugin: TextureAssetLoader registered with AssetServer for {loader.Extensions.Length} extension(s): " +
-                string.Join(", ", loader.Extensions));
-        }
-        else
-        {
-            Logger.Warn("TexturesPlugin: AssetServer not found - TextureAssetLoader was NOT registered. Add AssetPlugin first.");
-        }
+        var server = app.World.Resource<AssetServer>();
+        server.RegisterLoader(loader);
+        Logger.Info(
+            $"TexturesPlugin: TextureAssetLoader registered with AssetServer for {loader.Extensions.Length} extension(s): " +
+            string.Join(", ", loader.Extensions));
 
         Logger.Info("TexturesPlugin: Texture pipeline ready.");
     }
