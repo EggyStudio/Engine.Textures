@@ -59,6 +59,11 @@ public sealed class TextureAssetLoader : IAssetLoader<Texture>
 
             var settings = ResolveSettings(context.Path.Label);
             var texture = await decoder.DecodeAsync(context, settings, ct);
+            if (settings.GenerateMips && texture.MipCount <= 1
+                && !TextureFormatInfo.IsBlockCompressed(texture.Format))
+            {
+                texture = TextureMipGenerator.WithMipChain(texture);
+            }
             return AssetLoadResult<Texture>.Ok(texture);
         }
         catch (Exception ex)
@@ -71,11 +76,22 @@ public sealed class TextureAssetLoader : IAssetLoader<Texture>
     private static TextureLoadSettings ResolveSettings(string? label)
     {
         if (string.IsNullOrEmpty(label)) return TextureLoadSettings.Default;
-        return label.ToLowerInvariant() switch
+
+        TextureColorSpace? cs = null;
+        bool mips = false;
+        foreach (var rawToken in label.Split(['|', ',', ' '], StringSplitOptions.RemoveEmptyEntries))
         {
-            "srgb"   => new TextureLoadSettings { ColorSpace = TextureColorSpace.Srgb },
-            "linear" => new TextureLoadSettings { ColorSpace = TextureColorSpace.Linear },
-            _        => TextureLoadSettings.Default,
-        };
+            switch (rawToken.ToLowerInvariant())
+            {
+                case "srgb":   cs = TextureColorSpace.Srgb; break;
+                case "linear": cs = TextureColorSpace.Linear; break;
+                case "mips":
+                case "mipmap":
+                case "mipmaps": mips = true; break;
+            }
+        }
+
+        if (cs is null && !mips) return TextureLoadSettings.Default;
+        return new TextureLoadSettings { ColorSpace = cs, GenerateMips = mips };
     }
 }

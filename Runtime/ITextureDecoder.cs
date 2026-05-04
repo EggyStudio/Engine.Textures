@@ -56,6 +56,14 @@ public sealed class TextureLoadSettings
     /// </summary>
     public TextureColorSpace? ColorSpace { get; init; }
 
+    /// <summary>
+    /// When <c>true</c>, the loader runs <see cref="TextureMipGenerator.WithMipChain"/>
+    /// over the decoded base level to produce a complete mip chain. Defaults to
+    /// <c>false</c> - the renderer is free to generate mips on upload, and not every
+    /// texture wants them (UI / pixel art / single-sample lookup tables).
+    /// </summary>
+    public bool GenerateMips { get; init; }
+
     /// <summary>Reusable default settings (no overrides).</summary>
     public static TextureLoadSettings Default { get; } = new();
 }
