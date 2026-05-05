@@ -12,7 +12,7 @@ namespace Engine;
 /// thread; they must not retain references to the input stream after returning.
 /// </para>
 /// <para>
-/// <b>Color space:</b> decoders never apply colour-space conversion to pixel data.
+/// <b>Color space:</b> decoders never apply color-space conversion to pixel data.
 /// They may set <see cref="Texture.ColorSpace"/> from a hint passed in via
 /// <see cref="TextureLoadSettings.ColorSpace"/> or
 /// from format-native metadata (KTX2 / PNG sRGB chunk). Callers - typically
@@ -43,7 +43,7 @@ public interface ITextureDecoder
 /// Per-load decode hints forwarded by <see cref="TextureAssetLoader"/>.
 /// </summary>
 /// <remarks>
-/// Today this only carries the colour-space override that scene material binding needs
+/// Today this only carries the color-space override that scene material binding needs
 /// (BaseColor / Emissive should be sRGB; Normal / MetallicRoughness / Occlusion should be
 /// Linear). Future fields: requested mip range, max-resolution clamp, anisotropy hint.
 /// </remarks>

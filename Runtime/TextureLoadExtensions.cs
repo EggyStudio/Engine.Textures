@@ -9,19 +9,21 @@ namespace Engine;
 /// <remarks>
 /// <para>
 /// <b>Color-space hints</b> are forwarded to <see cref="TextureAssetLoader"/> via the
-/// sub-asset label channel: <c>"srgb"</c> for base-colour / emissive maps, <c>"linear"</c>
+/// sub-asset label channel: <c>"srgb"</c> for base-color / emissive maps, <c>"linear"</c>
 /// for normal / metallic-roughness / occlusion maps. Combine with <c>"mips"</c> to
 /// request a generated mip chain (e.g. <c>"srgb|mips"</c>).
 /// </para>
 /// </remarks>
 /// <example>
 /// <code>
-/// // Default: linear colour-space, no mips - decoder defaults.
+/// // Default: linear color-space, no mips - decoder defaults.
 /// Handle&lt;Texture&gt; tex = ctx.LoadTexture("textures/wood.png");
-///
-/// // Albedo / base-colour - sRGB, mip chain generated up-front:
+/// </code>
+/// <code>
+/// // Albedo / base-color - sRGB, mip chain generated up-front:
 /// Handle&lt;Texture&gt; albedo = ctx.LoadTextureSrgb("textures/wood_albedo.png", generateMips: true);
-///
+/// </code>
+/// <code>
 /// // Normal map - linear, no mips:
 /// Handle&lt;Texture&gt; normal = ctx.LoadTextureLinear("textures/wood_normal.png");
 /// </code>
